@@ -1,0 +1,47 @@
+﻿@model IEnumerable<LuckyMe.Models.EarningsPerGameViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="jumbotron">
+    @Html.Action("SummaryEarningCosts")
+</div>
+
+<h2>Custos vs Ganhos por jogo</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Jogo
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Count)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalCost)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalAward)
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Game.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Count)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalCost)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalAward)
+        </td>
+    </tr>
+}
+
+</table>

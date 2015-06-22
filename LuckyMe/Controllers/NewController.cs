@@ -11,6 +11,7 @@ using LuckyMe.Models;
 
 namespace LuckyMe.Controllers
 {
+    [Authorize]
     public class NewController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

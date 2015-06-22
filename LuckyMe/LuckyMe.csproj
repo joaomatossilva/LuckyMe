@@ -195,6 +195,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NewController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Extensions\IIdentityExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -209,8 +210,10 @@
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Draw.cs" />
+    <Compile Include="Models\EarningsPerGameViewModel.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\SummaryEarningCostsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -316,6 +319,8 @@
     <Content Include="Views\New\Draw.cshtml" />
     <Content Include="Views\New\Index.cshtml" />
     <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
+    <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\User\SummaryEarningCosts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

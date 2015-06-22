@@ -1,0 +1,25 @@
+﻿@model LuckyMe.Models.SummaryEarningCostsViewModel
+
+<div>
+    <h4>Total Custos vs Proveitos</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalCost)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalCost)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalAward)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalAward)
+        </dd>
+
+    </dl>
+</div>
+
