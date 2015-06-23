@@ -19,10 +19,21 @@ namespace LuckyMe.Migrations
 
         protected override void Seed(LuckyMe.Models.ApplicationDbContext context)
         {
+            var sorteio = context.Categories.FirstOrDefault(c => c.Name == "Sorteio");
+            var raspadinha = context.Categories.FirstOrDefault(c => c.Name == "Raspadinha");
 
-            var sorteio = new Category {Name = "Sorteio"};
-            var raspadinha = new Category {Name = "Raspadinha"};
+            if (sorteio == null)
+            {
+                sorteio = new Category { Name = "Sorteio" };
+                context.Categories.AddOrUpdate(p => p.Name, sorteio);
+            }
 
+            if (raspadinha == null)
+            {
+                raspadinha = new Category { Name = "Raspadinha" };
+                context.Categories.AddOrUpdate(p => p.Name, raspadinha);
+            }
+            
             context.Categories.AddOrUpdate(p => p.Name,
                 sorteio,
                 raspadinha);
