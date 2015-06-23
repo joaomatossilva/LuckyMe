@@ -31,15 +31,26 @@ namespace LuckyMe.Migrations
                 new Game { Name = "Euromilhões", IsActive = true, BasePrice = 2, Category = sorteio },
                 new Game { Name = "Totoloto", IsActive = true, BasePrice = .9m, Category = sorteio },
                 new Game { Name = "Totobola", IsActive = true, BasePrice = .4m, Category = sorteio },
-                new Game { Name = "Super Pé de Meia", IsActive = true, BasePrice = 5, ImageUrl = "https://www.jogossantacasa.pt/Game/images/raspadinha/Imagem_286.png", Category = raspadinha },
-                new Game { Name = "Pé de Meia", IsActive = true, BasePrice = 3, Category = raspadinha },
-                new Game { Name = "Mini Pé de Meia", IsActive = true, BasePrice = 1, Category = raspadinha },
+                new Game { Name = "Super Pé-de-Meia", IsActive = true, BasePrice = 5, ImageUrl = "https://www.jogossantacasa.pt/Game/images/raspadinha/Imagem_286.png", Category = raspadinha },
+                new Game { Name = "Pé-de-Meia", IsActive = true, BasePrice = 3, Category = raspadinha },
+                new Game { Name = "Mini Pé-de-Meia", IsActive = true, BasePrice = 1, Category = raspadinha },
                 new Game { Name = "Férias", IsActive = true, BasePrice = 1, Category = raspadinha },
                 new Game { Name = "Grande Sorte", IsActive = true, BasePrice = 2, ImageUrl = "https://www.jogossantacasa.pt/Game/images/raspadinha/Imagem_341.png", Category = raspadinha },
                 new Game { Name = "Zodíaco da Sorte", IsActive = true, BasePrice = 2, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/11123/Raspadinha237.jpg", Category = raspadinha },
                 new Game { Name = "20x", IsActive = true, BasePrice = 2, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/8388/Raspadinha216.jpg", Category = raspadinha },
                 new Game { Name = "50x", IsActive = true, BasePrice = 5, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/11386/Raspadinha234.jpg", Category = raspadinha },
-                new Game { Name = "100x", IsActive = true, BasePrice = 10, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/12369/Raspadinha242.jpg", Category = raspadinha }
+                new Game { Name = "100x", IsActive = true, BasePrice = 10, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/12369/Raspadinha242.jpg", Category = raspadinha },
+                new Game { Name = "Trevo da Sorte", IsActive = true, BasePrice = 1, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/7209/Raspadinha207.jpg", Category = raspadinha },
+                new Game { Name = "Procura-se", IsActive = true, BasePrice = 1, ImageUrl = "https://www.jogossantacasa.pt/Content/images/uploadedImages/content/pjmc/gc/cont/7698/Raspadinha226.jpg", Category = raspadinha },
+                new Game { Name = "Dias da Semana", IsActive = true, BasePrice = 1, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Portas da Sorte", IsActive = true, BasePrice = 1, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Ano da Cabra", IsActive = true, BasePrice = 1, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Aranha da Sorte", IsActive = true, BasePrice = 1, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Música", IsActive = true, BasePrice = 2, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Fogosos", IsActive = true, BasePrice = 2, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Recompensa", IsActive = true, BasePrice = 3, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "20 Anos", IsActive = true, BasePrice = 3, ImageUrl = "", Category = raspadinha },
+                new Game { Name = "Mega Pé-de-Meia", IsActive = true, BasePrice = 10, ImageUrl = "", Category = raspadinha }
                 );
 
             if (!(context.Roles.Any(u => u.Name == "Admin")))
