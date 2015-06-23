@@ -14,7 +14,7 @@ namespace LuckyMe.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
         }
 
         protected override void Seed(LuckyMe.Models.ApplicationDbContext context)
@@ -33,12 +33,10 @@ namespace LuckyMe.Migrations
                 raspadinha = new Category { Name = "Raspadinha" };
                 context.Categories.AddOrUpdate(p => p.Name, raspadinha);
             }
-            
-            context.Categories.AddOrUpdate(p => p.Name,
-                sorteio,
-                raspadinha);
 
-            context.Games.AddOrUpdate(p => p.Name,
+            context.SaveChanges();
+
+            SeedGames(context,
                 new Game { Name = "Euromilhões", IsActive = true, BasePrice = 2, Category = sorteio },
                 new Game { Name = "Totoloto", IsActive = true, BasePrice = .9m, Category = sorteio },
                 new Game { Name = "Totobola", IsActive = true, BasePrice = .4m, Category = sorteio },
@@ -64,6 +62,8 @@ namespace LuckyMe.Migrations
                 new Game { Name = "Mega Pé-de-Meia", IsActive = true, BasePrice = 10, ImageUrl = "", Category = raspadinha }
                 );
 
+            context.SaveChanges();
+
             if (!(context.Roles.Any(u => u.Name == "Admin")))
             {
                 var roleStore = new RoleStore<CustomRole, Guid, CustomUserRole>(context);
@@ -80,6 +80,17 @@ namespace LuckyMe.Migrations
                 if (result.Succeeded)
                 {
                     userManager.AddToRole(userToInsert.Id, "Admin");
+                }
+            }
+        }
+
+        private void SeedGames(ApplicationDbContext context, params Game[] games)
+        {
+            foreach (var gameToSeed in games)
+            {
+                if (!context.Games.Any(g => g.Name == gameToSeed.Name))
+                {
+                    context.Games.Add(gameToSeed);
                 }
             }
         }
