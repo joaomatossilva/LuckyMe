@@ -77,6 +77,10 @@ namespace LuckyMe.Controllers
             {
                 return HttpNotFound();
             }
+            if (draw.UserId != User.Identity.GetUserIdAsGuid())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             return View(draw);
         }
 
@@ -86,6 +90,10 @@ namespace LuckyMe.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Draw draw = await db.Draws.FindAsync(id);
+            if (draw.UserId != User.Identity.GetUserIdAsGuid())
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             db.Draws.Remove(draw);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
