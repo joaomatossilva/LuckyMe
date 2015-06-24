@@ -19,7 +19,8 @@ namespace LuckyMe.Controllers
         // GET: Draws
         public async Task<ActionResult> Index()
         {
-            var draws = db.Draws.Include(d => d.Game).Include(d => d.User).OrderByDescending(d => d.Date);
+            var userId = User.Identity.GetUserIdAsGuid();
+            var draws = db.Draws.Include(d => d.Game).Include(d => d.User).Where(g => g.UserId == userId).OrderByDescending(d => d.Date);
             return View(await draws.ToListAsync());
         }
 
