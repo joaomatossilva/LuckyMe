@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LuckyMe.Models
 {
@@ -9,8 +10,14 @@ namespace LuckyMe.Models
         public ApplicationUser User { get; set; }
         public int GameId { get; set; }
         public Game Game { get; set; }
+        
+        [Display(Name = "Data")]
         public DateTimeOffset Date { get; set; }
+
+        [Display(Name = "Custo")]
         public decimal Cost { get; set; }
+
+        [Display(Name = "Prémio")]
         public decimal Award { get; set; }
     }
 }

@@ -4,23 +4,19 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Choose Game</h2>
+<h2>Escolhe o Jogo</h2>
 
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.ActionLink("Select", "Draw", new { id=item.Id })
+            <a href="@Url.Action("Draw", new { id=item.Id })">@Html.DisplayFor(modelItem => item.Name)</a>
         </td>
     </tr>
 }

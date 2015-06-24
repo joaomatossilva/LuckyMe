@@ -25,13 +25,14 @@ namespace LuckyMe.Controllers
         // GET: New
         public async Task<ActionResult> Draw(int id)
         {
-            var game = await db.Games.FindAsync(id);
+            var game = await db.Games.Include(g => g.Category).SingleAsync(g => id == g.Id);
             var draw = new Draw
                        {
                            GameId = id,
                            Cost = game.BasePrice,
                            Date = DateTime.UtcNow
                        };
+            FillUpGameViewBags(game);
             return View(draw);
         }
 
@@ -39,6 +40,7 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Draw([Bind(Include = "GameId,Date,Cost,Award")]Draw draw, int id)
         {
+            var game = await db.Games.Include(g => g.Category).SingleAsync(g => id == g.Id);
             if (draw.GameId != id)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid game");
@@ -51,7 +53,14 @@ namespace LuckyMe.Controllers
                 return RedirectToAction("Index");
             }
 
+            FillUpGameViewBags(game);
             return View(draw);
+        }
+
+        private void FillUpGameViewBags(Game game)
+        {
+            ViewBag.Category = game.Category.Name;
+            ViewBag.Game = game.Name;            
         }
 
         protected override void Dispose(bool disposing)

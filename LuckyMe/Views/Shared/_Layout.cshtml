@@ -48,6 +48,15 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundle/globalize")
+    <script type="text/javascript">
+            $(function () {
+                $('.date').datetimepicker({
+                    //locale: 'pt',
+                    format: 'DD/MM/YYYY'
+                });
+            });
+    </script>
     @RenderSection("scripts", required: false)
+    
 </body>
 </html>
