@@ -24,7 +24,8 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Estatisticas", "Index", "User")</li>
-                        <li>@Html.ActionLink("New", "Index", "New", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Novo", "Index", "New", new { Area = "" }, null)</li>
+                        <li>@Html.ActionLink("Listagem", "Index", "Draws", new { Area = "" }, null)</li>
                     }
                     @if (User.IsInRole("Admin"))
                     {

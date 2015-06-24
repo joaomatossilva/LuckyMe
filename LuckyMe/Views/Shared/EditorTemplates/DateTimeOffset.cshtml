@@ -1,0 +1,7 @@
+﻿@model DateTimeOffset?
+<div class='input-group date'>
+    @Html.TextBox("", Model.HasValue ? Model.Value.ToString("d") : String.Empty, new { @class = "form-control" })
+    <span class="input-group-addon">
+        <span class="glyphicon glyphicon-calendar"></span>
+    </span>
+</div>

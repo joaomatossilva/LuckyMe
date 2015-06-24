@@ -12,6 +12,7 @@ namespace LuckyMe.Models
         public Game Game { get; set; }
         
         [Display(Name = "Data")]
+        [DisplayFormat(DataFormatString = "{0:d}", ApplyFormatInEditMode = true)]
         public DateTimeOffset Date { get; set; }
 
         [Display(Name = "Custo")]

@@ -198,6 +198,7 @@
     <Compile Include="Areas\Admin\Controllers\GamesController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DrawsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NewController.cs" />
@@ -336,6 +337,10 @@
     <Content Include="Views\User\SummaryEarningCosts.cshtml" />
     <Content Include="Views\Shared\Login.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateTimeOffset.cshtml" />
+    <Content Include="Views\Draws\Create.cshtml" />
+    <Content Include="Views\Draws\Delete.cshtml" />
+    <Content Include="Views\Draws\Edit.cshtml" />
+    <Content Include="Views\Draws\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
