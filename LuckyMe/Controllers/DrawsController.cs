@@ -15,13 +15,29 @@ namespace LuckyMe.Controllers
     public class DrawsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private const int ItemsPerPage = 10;
 
         // GET: Draws
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? page )
         {
+            page = page ?? 1;
             var userId = User.Identity.GetUserIdAsGuid();
-            var draws = db.Draws.Include(d => d.Game).Include(d => d.User).Where(g => g.UserId == userId).OrderByDescending(d => d.Date);
-            return View(await draws.ToListAsync());
+            var total = db.Draws.Count(g => g.UserId == userId);
+            var draws = await db.Draws.Include(d => d.Game).Include(d => d.User)
+                .Where(g => g.UserId == userId)
+                .OrderByDescending(d => d.Date)
+                .Take(ItemsPerPage)
+                .Skip((int)(page-1) * ItemsPerPage)
+                .ToListAsync();
+
+            var paged = new Paged<Draw>
+                        {
+                            Items = draws,
+                            ItemsTotalCount = total,
+                            ItemsPerPage = ItemsPerPage,
+                            CurrentPage = (int) page
+                        };
+            return View(paged);
         }
 
 
