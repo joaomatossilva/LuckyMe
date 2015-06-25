@@ -10,5 +10,9 @@ namespace LuckyMe.Models
         public decimal TotalCost { get; set; }
         public decimal TotalAward { get; set; }
 
+        public decimal Balance
+        {
+            get { return TotalAward - TotalCost; }
+        }
     }
 }

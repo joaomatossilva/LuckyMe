@@ -1,13 +1,17 @@
 ﻿@model LuckyMe.Models.SummaryEarningCostsViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-md-6 text-center">
+    <div class="col-xs-12 col-md-4 text-center">
         <h2>@Html.DisplayFor(model => model.TotalCost)</h2>
         <div class="">Custos</div>
     </div>
-    <div class="col-xs-12 col-md-6 text-center">
+    <div class="col-xs-12 col-md-4 text-center">
         <h2>@Html.DisplayFor(model => model.TotalAward)</h2>
         <div>Ganhos</div>
+    </div>
+    <div class="col-xs-12 col-md-4 text-center">
+        <h2>@Html.DisplayFor(model => model.Balance)</h2>
+        <div>Lucro</div>
     </div>
 </div>
 
