@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using LuckyMe.Models;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace LuckyMe.Areas.Admin.Controllers
 {
@@ -116,6 +117,16 @@ namespace LuckyMe.Areas.Admin.Controllers
             db.Users.Remove(applicationUser);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> LoginAs(Guid id)
+        {
+            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
+            var manager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            await manager.SignInAsync(applicationUser, false, false);
+            return RedirectToAction("Index", "User", new {area = ""});
         }
 
         protected override void Dispose(bool disposing)
