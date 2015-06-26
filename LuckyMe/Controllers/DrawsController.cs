@@ -26,8 +26,8 @@ namespace LuckyMe.Controllers
             var draws = await db.Draws.Include(d => d.Game).Include(d => d.User)
                 .Where(g => g.UserId == userId)
                 .OrderByDescending(d => d.Date)
+                .Skip((int)(page - 1) * ItemsPerPage)
                 .Take(ItemsPerPage)
-                .Skip((int)(page-1) * ItemsPerPage)
                 .ToListAsync();
 
             var paged = new Paged<Draw>
