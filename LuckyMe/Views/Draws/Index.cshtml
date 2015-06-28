@@ -1,4 +1,4 @@
-﻿@model LuckyMe.Models.Paged<LuckyMe.Models.Draw>
+﻿@model LuckyMe.Models.DrawIndexQuery
 
 @{
     ViewBag.Title = "Listagem";
@@ -23,7 +23,7 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model.Items) {
+@foreach (var item in Model.Results.Items) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Game.Name)
@@ -46,4 +46,4 @@
 
 </table>
 
-@Html.Partial("Pager", Model)
+@Html.Partial("Pager", Model.Results)

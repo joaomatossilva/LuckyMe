@@ -4,7 +4,7 @@
     <div class="btn-group" role="group">
         @for (int page = Model.StartPage; page <= Model.EndPage; page++)
         {
-            <a role="button" class="btn btn-default" href="@Url.RouteUrl("Default", new { page })" @if (page == Model.CurrentPage) { <text> disabled="disabled" </text>  }>@page</a>
+            <a role="button" class="btn btn-default" href="@Url.RouteUrl("Default", new { Page = page })" @if (page == Model.CurrentPage) { <text> disabled="disabled" </text>  }>@page</a>
         }
     </div>
 </div>

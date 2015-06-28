@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
 using System.Web;
@@ -18,15 +20,23 @@ namespace LuckyMe.Controllers
         private const int ItemsPerPage = 10;
 
         // GET: Draws
-        public async Task<ActionResult> Index(int? page )
+        public async Task<ActionResult> Index(DrawIndexQuery query)
         {
-            page = page ?? 1;
             var userId = User.Identity.GetUserIdAsGuid();
-            var total = db.Draws.Count(g => g.UserId == userId);
-            var draws = await db.Draws.Include(d => d.Game).Include(d => d.User)
-                .Where(g => g.UserId == userId)
+            var basequery = db.Draws.Where(d => d.UserId == userId);
+            if (query.GameId != null)
+            {
+                basequery = basequery.Where(d => d.GameId == query.GameId);
+            }
+            if (query.Date != null)
+            {
+                basequery = basequery.Where(d => EntityFunctions.TruncateTime(d.Date) == query.Date);
+            }
+
+            var total = await basequery.CountAsync();
+            var draws = await basequery.Include(d => d.Game).Include(d => d.User)
                 .OrderByDescending(d => d.Date)
-                .Skip((int)(page - 1) * ItemsPerPage)
+                .Skip((query.Page - 1) * ItemsPerPage)
                 .Take(ItemsPerPage)
                 .ToListAsync();
 
@@ -35,9 +45,10 @@ namespace LuckyMe.Controllers
                             Items = draws,
                             ItemsTotalCount = total,
                             ItemsPerPage = ItemsPerPage,
-                            CurrentPage = (int) page
+                            CurrentPage = query.Page
                         };
-            return View(paged);
+            query.Results = paged;
+            return View(query);
         }
 
 

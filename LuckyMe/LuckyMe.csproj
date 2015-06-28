@@ -217,6 +217,7 @@
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Draw.cs" />
+    <Compile Include="Models\DrawIndexQuery.cs" />
     <Compile Include="Models\EarningsPerGameViewModel.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
