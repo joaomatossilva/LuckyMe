@@ -222,6 +222,7 @@
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Paged.cs" />
+    <Compile Include="Models\PerCategoryViewModel.cs" />
     <Compile Include="Models\SummaryEarningCostsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />

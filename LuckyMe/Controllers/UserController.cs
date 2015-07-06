@@ -21,14 +21,22 @@ namespace LuckyMe.Controllers
             var userId = User.Identity.GetUserIdAsGuid();
             var drawsPerGame = await (from draws in db.Draws
                 where draws.UserId == userId
-                group draws by draws.Game
-                into drawsGrouppedByGame 
-                select new EarningsPerGameViewModel
+                group draws by draws.Game.Category
+                into drawsGrouppedByCategory 
+                select new PerCategoryViewModel<EarningsPerGameViewModel>
                 {
-                    Game = drawsGrouppedByGame.Key,
-                    Count = drawsGrouppedByGame.Count(),
-                    TotalCost = drawsGrouppedByGame.Sum(d => d.Cost),
-                    TotalAward = drawsGrouppedByGame.Sum(d => d.Award)
+                    CatergoryName = drawsGrouppedByCategory.Key.Name,
+                    Items = from drawsGroupped in drawsGrouppedByCategory
+                            group drawsGroupped by drawsGroupped.Game
+                            into drawsGrouppedByGame
+                            select new EarningsPerGameViewModel
+                            {
+                                Game = drawsGrouppedByGame.Key,
+                                Count = drawsGrouppedByGame.Count(),
+                                CountWithAward = drawsGrouppedByGame.Count(d => d.Award > 0),
+                                TotalCost = drawsGrouppedByGame.Sum(d => d.Cost),
+                                TotalAward = drawsGrouppedByGame.Sum(d => d.Award)
+                            }
                 }).ToListAsync();
             return View(drawsPerGame);
         }

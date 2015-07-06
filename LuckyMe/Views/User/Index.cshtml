@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LuckyMe.Models.EarningsPerGameViewModel>
+﻿@model IEnumerable<LuckyMe.Models.PerCategoryViewModel<LuckyMe.Models.EarningsPerGameViewModel>>
 
 @{
     ViewBag.Title = "Estatisticas";
@@ -11,37 +11,48 @@
 
 <h2>Custos vs Ganhos por jogo</h2>
 
-<table class="table">
-    <tr>
-        <th>
-            Jogo
-        </th>
-        <th>
-            Quantidade
-        </th>
-        <th>
-            Custos
-        </th>
-        <th>
-            Ganhos
-        </th>
-    </tr>
+@foreach (var category in Model)
+{
+    <h3>@category.CatergoryName</h3>
+    <table class="table">
+        <tr>
+            <th>
+                Jogo
+            </th>
+            <th>
+                Quantidade
+            </th>
+            <th>
+                Custos
+            </th>
+            <th>
+                Ganhos
+            </th>
+            <th>
+                Rating
+            </th>
+        </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Game.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Count)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalCost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalAward)
-        </td>
-    </tr>
+        @foreach (var item in category.Items.OrderByDescending(o => o.AwardRate))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Game.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Count)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalCost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalAward)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AwardRate)
+                </td>
+            </tr>
+        }
+
+    </table>
 }
-
-</table>
