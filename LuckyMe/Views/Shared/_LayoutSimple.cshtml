@@ -1,0 +1,81 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Lucky Me</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+</head>
+<body class="skin-blue layout-top-nav simple-layout">
+    <div class="wrapper">
+
+
+        <!-- Main Header -->
+        <header class="main-header">
+
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Logo -->
+                <a href="@Url.Action("Index", "Home", new { area = ""})" class="logo">
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>Lucky</b> Me</span>
+                </a>
+
+
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li class="">
+                            <!-- Menu toggle button -->
+                            <a href="@Url.Action("Login", "Account")" class="">
+                                <span>Entra</span>
+                            </a>
+                        </li>
+                        <li class="">
+                            <!-- Menu toggle button -->
+                            <a href="@Url.Action("Register", "Account")" class="">
+                                <span>Regista-te</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+
+            <!-- Main content -->
+            <section class="content">
+                @RenderBody()
+            </section><!-- /.content -->
+        </div><!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <!-- Default to the left -->
+            <strong>Copyright &copy; @DateTime.Now.Year - Lucky Me.</strong> All rights reserved.
+        </footer>
+
+
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundle/globalize")
+    <script type="text/javascript">
+        $(function () {
+            $('.date').datetimepicker({
+                //locale: 'pt',
+                format: 'DD/MM/YYYY'
+            });
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+
+</body>
+
+
+
+</html>

@@ -1,58 +1,61 @@
 ﻿@model IEnumerable<LuckyMe.Models.PerCategoryViewModel<LuckyMe.Models.EarningsPerGameViewModel>>
 
 @{
-    ViewBag.Title = "Estatisticas";
+    ViewBag.Title = "Estatísticas";
 }
 
 
-<div class="jumbotron">
-    @Html.Action("SummaryEarningCosts")
-</div>
-
-<h2>Custos vs Ganhos por jogo</h2>
+@Html.Action("SummaryEarningCosts")
 
 @foreach (var category in Model)
 {
-    <h3>@category.CatergoryName</h3>
-    <table class="table">
-        <tr>
-            <th>
-                Jogo
-            </th>
-            <th>
-                Quantidade
-            </th>
-            <th>
-                Custos
-            </th>
-            <th>
-                Ganhos
-            </th>
-            <th>
-                Rating
-            </th>
-        </tr>
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Custos vs Ganhos - @category.CatergoryName</h3>
+        </div>
+        <div class="box-body">
 
-        @foreach (var item in category.Items.OrderByDescending(o => o.AwardRate))
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Game.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Count)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalCost)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TotalAward)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AwardRate)
-                </td>
-            </tr>
-        }
+            <table class="table">
+                <tr>
+                    <th>
+                        Jogo
+                    </th>
+                    <th>
+                        Qtd.
+                    </th>
+                    <th>
+                        Custos
+                    </th>
+                    <th>
+                        Ganhos
+                    </th>
+                    <th>
+                        Rating
+                    </th>
+                </tr>
 
-    </table>
+                @foreach (var item in category.Items.OrderByDescending(o => o.AwardRate))
+                {
+                    <tr>
+                        <td class="game-title">
+                            @Html.DisplayFor(modelItem => item.Game.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Count)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalCost)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.TotalAward)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AwardRate)
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
 }

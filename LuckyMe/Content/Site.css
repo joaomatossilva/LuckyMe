@@ -1,14 +1,4 @@
-﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
-/* Set padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
+﻿
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
@@ -16,3 +6,24 @@
     white-space: normal;
 }
 
+.banner {
+    padding-top: 2em;
+    font-size: 1.2em;
+    line-height: 4em;
+}
+
+.banner h2{
+    font-size: 2.5em;
+}
+
+.banner p {
+    color: gray;
+}
+
+.simple-layout label {
+    font-weight: inherit;
+}
+
+td.game-title {
+    width: 25%;
+}

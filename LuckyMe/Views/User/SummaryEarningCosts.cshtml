@@ -1,17 +1,66 @@
 ﻿@model LuckyMe.Models.SummaryEarningCostsViewModel
 
 <div class="row">
-    <div class="col-xs-12 col-md-4 text-center">
-        <h2>@Html.DisplayFor(model => model.TotalCost)</h2>
-        <div class="">Custos</div>
+
+    <div class="col-xs-6 col-md-3">
+        <!-- small box -->
+        <div class="small-box bg-maroon">
+            <div class="inner row">
+                <div class="col-xs-12 col-md-6 text-center">
+                    <h3>@Html.DisplayFor(model => model.TotalGames)</h3>
+                    <p>Jogos</p>
+                </div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-newspaper-o"></i>
+            </div>
+        </div>
     </div>
-    <div class="col-xs-12 col-md-4 text-center">
-        <h2>@Html.DisplayFor(model => model.TotalAward)</h2>
-        <div>Ganhos</div>
+
+    <div class="col-xs-6 col-md-3">
+        <!-- small box -->
+        <div class="small-box bg-yellow">
+            <div class="inner row">
+                <div class="col-xs-12 col-md-6 text-center">
+                    <h3>@Html.DisplayFor(model => model.TotalCost)</h3>
+                    <p>Custos</p>
+                </div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-money"></i>
+            </div>
+        </div>
     </div>
-    <div class="col-xs-12 col-md-4 text-center">
-        <h2>@Html.DisplayFor(model => model.Balance)</h2>
-        <div>Lucro</div>
+
+    <div class="col-xs-6 col-md-3">
+        <!-- small box -->
+        <div class="small-box bg-aqua">
+            <div class="inner row">
+                <div class="col-xs-12 col-md-6 text-center">
+                    <h3>@Html.DisplayFor(model => model.TotalAward)</h3>
+                    <p>Ganhos</p>
+                </div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-trophy"></i>
+            </div>
+        </div>
     </div>
+
+    <div class="col-xs-6 col-md-3">
+        <!-- small box -->
+        <div class="small-box bg-green">
+            <div class="inner row">
+                <div class="col-xs-12 col-md-6 text-center">
+                    <h3>@Html.DisplayFor(model => model.Balance)</h3>
+                    <p>Lucro</p>
+                </div>
+            </div>
+            <div class="icon">
+                <i class="fa fa-thumbs-up"></i>
+            </div>
+        </div>
+    </div>
+
 </div>
 

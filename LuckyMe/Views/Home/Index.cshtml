@@ -1,11 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Lucky Me";
 }
 
-<div class="jumbotron">
-    <h1>Lucky Me</h1>
-    <p class="lead">&#201;s o maior sortudo l&#225; do s&#237;tio?</p>
-    <p>Regista-te j&#225; ou entra e come&#231;a j&#225; a registar os teus jogos para veres as tuas estat&#237;sticas</p>
+<div class="banner text-center">
+    <h2>&#201;s o maior sortudo l&#225; do s&#237;tio?</h2>
+    <p>Cria uma conta ou entra e come&#231;a j&#225; a registar os teus jogos...</p>
+    <div class="clearfix">
+        <a href="@Url.Action("Register", "Account")" class="btn btn-success btn-lg">Exprimenta já</a>
+    </div>
 </div>
-
-@Html.Partial("Login")

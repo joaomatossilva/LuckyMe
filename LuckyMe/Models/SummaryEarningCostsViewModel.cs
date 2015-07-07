@@ -7,6 +7,7 @@ namespace LuckyMe.Models
 {
     public class SummaryEarningCostsViewModel
     {
+        public int TotalGames { get; set; }
         public decimal TotalCost { get; set; }
         public decimal TotalAward { get; set; }
 

@@ -53,7 +53,8 @@ namespace LuckyMe.Controllers
                 select new SummaryEarningCostsViewModel()
                 {
                     TotalCost = userDraws.Sum(d => d.Cost),
-                    TotalAward = userDraws.Sum(d => d.Award)
+                    TotalAward = userDraws.Sum(d => d.Award),
+                    TotalGames = userDraws.Count()
                 }).FirstOrDefault();
             return PartialView(summaryEarningCosts);
         }

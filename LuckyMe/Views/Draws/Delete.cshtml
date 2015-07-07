@@ -1,48 +1,61 @@
 ﻿@model LuckyMe.Models.Draw
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Apagar - " + @Model.Game.Name;
 }
 
-<h2>Apagar</h2>
 
-<h3>Tem a certeza que quer apagar?</h3>
-<div>
-    <h4>@Model.Game.Name</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
+<div class="row">
+    <div class="col-md-6">
+        <div class="box">
+            <div class="box-header">
+                <h3 class="box-title"><i class="fa fa-exclamation-triangle"></i>Tem a certeza que quer apagar este registo?</h3>
+            </div>
+            <div class="box-body">
+                <h4>@Model.Game.Name</h4>
+                <div>
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Date)
+                        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Date)
-        </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.Date)
+                        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Cost)
-        </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Cost)
+                        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Cost)
-        </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.Cost)
+                        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Award)
-        </dt>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Award)
+                        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Award)
-        </dd>
+                        <dd>
+                            @Html.DisplayFor(model => model.Award)
+                        </dd>
 
-    </dl>
+                    </dl>
 
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Apagar" class="btn btn-default" /> |
-            @Html.ActionLink("Voltar à listagem", "Index")
+                        <div class="form-actions no-color">
+                            <input type="submit" value="Apagar" class="btn btn-danger" />
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
-    }
+    </div>
+</div>
+
+                
+<div>
+    <a href="@Url.Action("Index")"><i class="fa fa-arrow-left"></i> Voltar &#224; listagem</a>
 </div>

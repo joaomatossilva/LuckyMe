@@ -4,46 +4,60 @@
     ViewBag.Title = "Listagem";
 }
 
-<h2>Listagem</h2>
+<div class="box">
+    <div class="box-header">
+        <h3 class="box-title">Listagem</h3>
+        <div class="box-tools pull-right">
+            @Html.Partial("Pager", Model.Results)
+        </div>
+    </div>
+    <div class="box-body">
+        <table class="table">
+            <tr>
+                <th>
+                    Nome
+                </th>
+                <th>
+                    Data
+                </th>
+                <th>
+                    Custo
+                </th>
+                <th>
+                    Pr&#233;mio
+                </th>
+                <th></th>
+            </tr>
 
-<table class="table">
-    <tr>
-        <th>
-            Nome
-        </th>
-        <th>
-            Data
-        </th>
-        <th>
-            Custo
-        </th>
-        <th>
-            Pr&#233;mio
-        </th>
-        <th></th>
-    </tr>
+            @foreach (var item in Model.Results.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cost)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Award)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Apagar", "Delete", new { id = item.Id })
+                    </td>
+                </tr>
+            }
 
-@foreach (var item in Model.Results.Items) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Game.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Cost)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Award)
-        </td>
-        <td>
-            @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Apagar", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+        </table>
+    </div>
+    <div class="box-footer">
+        <div class="box-tools pull-right">
+            @Html.Partial("Pager", Model.Results)
+        </div>
+    </div>
+</div>
 
-</table>
 
-@Html.Partial("Pager", Model.Results)
