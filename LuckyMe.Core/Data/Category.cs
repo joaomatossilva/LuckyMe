@@ -1,4 +1,4 @@
-﻿namespace LuckyMe.Models
+﻿namespace LuckyMe.Core.Data
 {
     public class Category
     {

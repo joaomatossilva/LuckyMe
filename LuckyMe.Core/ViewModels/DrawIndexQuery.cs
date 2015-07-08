@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using LuckyMe.Core.Data;
 
-namespace LuckyMe.Models
+namespace LuckyMe.Core.ViewModels
 {
     public class DrawIndexQuery
     {

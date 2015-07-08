@@ -1,23 +1,21 @@
-using System.Collections.ObjectModel;
-using LuckyMe.Models;
+using LuckyMe.Core.Data;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace LuckyMe.Migrations
 {
     using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<LuckyMe.Models.ApplicationDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(LuckyMe.Models.ApplicationDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
             var sorteio = context.Categories.FirstOrDefault(c => c.Name == "Sorteio");
             var raspadinha = context.Categories.FirstOrDefault(c => c.Name == "Raspadinha");

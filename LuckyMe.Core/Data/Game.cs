@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LuckyMe.Models
+namespace LuckyMe.Core.Data
 {
     public class Game
     {

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
+using LuckyMe.Core.Data;
 
-namespace LuckyMe.Models
+namespace LuckyMe.Core.ViewModels
 {
     public class EarningsPerGameViewModel
     {

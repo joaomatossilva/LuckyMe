@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using LuckyMe.Core.Data;
+using LuckyMe.Core.ViewModels;
 using LuckyMe.Extensions;
 using LuckyMe.Models;
 
