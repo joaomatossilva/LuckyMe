@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LuckyMe.Models.ApplicationUser>
+﻿@model IEnumerable<LuckyMe.Core.Data.ApplicationUser>
 
 @{
     ViewBag.Title = "Index";
@@ -46,7 +46,7 @@
             @using (Html.BeginForm("LoginAs", "Users"))
             {
                 @Html.AntiForgeryToken()
-                <input type="hidden" name="id", value="@item.Id"/>
+                <input type="hidden" name="id" value="@item.Id"/>
                 <div class="form-actions no-color">
                     <input type="submit" value="Login" class="btn btn-default" />
                 </div>
