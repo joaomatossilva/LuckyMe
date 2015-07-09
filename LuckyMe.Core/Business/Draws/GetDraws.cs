@@ -1,15 +1,19 @@
 ﻿using System;
 using LuckyMe.Core.Data;
+using LuckyMe.Core.ViewModels;
+using MediatR;
 
-namespace LuckyMe.Core.ViewModels
+namespace LuckyMe.Core.Business.Draws
 {
-    public class DrawIndexQuery
+    public class GetDraws : IAsyncRequest<Paged<Draw>>
     {
-        public DrawIndexQuery()
+        public GetDraws()
         {
             Page = 1;
         }
 
+        public int ItemsPerPage { get; set; }
+        public Guid UserId { get; set; }
         public int Page { get; set; }
         public int? GameId { get; set; }
         public DateTime? Date { get; set; }

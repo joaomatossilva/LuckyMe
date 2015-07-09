@@ -1,54 +1,30 @@
-﻿using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Net;
 using System.Web.Mvc;
+using LuckyMe.Core.Business;
+using LuckyMe.Core.Business.Draws;
 using LuckyMe.Core.Data;
-using LuckyMe.Core.ViewModels;
 using LuckyMe.Extensions;
+using MediatR;
 
 namespace LuckyMe.Controllers
 {
     public class DrawsController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IMediator _mediator;
         private const int ItemsPerPage = 10;
 
-        public DrawsController(ApplicationDbContext db)
+        public DrawsController(IMediator mediator)
         {
-            _db = db;
+            _mediator = mediator;
         }
 
         // GET: Draws
-        public async Task<ActionResult> Index(DrawIndexQuery query)
+        public async Task<ActionResult> Index(GetDraws query)
         {
-            var userId = User.Identity.GetUserIdAsGuid();
-            var basequery = _db.Draws.Where(d => d.UserId == userId);
-            if (query.GameId != null)
-            {
-                basequery = basequery.Where(d => d.GameId == query.GameId);
-            }
-            if (query.Date != null)
-            {
-                basequery = basequery.Where(d => EntityFunctions.TruncateTime(d.Date) == query.Date);
-            }
-
-            var total = await basequery.CountAsync();
-            var draws = await basequery.Include(d => d.Game).Include(d => d.User)
-                .OrderByDescending(d => d.Date)
-                .Skip((query.Page - 1) * ItemsPerPage)
-                .Take(ItemsPerPage)
-                .ToListAsync();
-
-            var paged = new Paged<Draw>
-                        {
-                            Items = draws,
-                            ItemsTotalCount = total,
-                            ItemsPerPage = ItemsPerPage,
-                            CurrentPage = query.Page
-                        };
-            query.Results = paged;
+            query.UserId = User.Identity.GetUserIdAsGuid();
+            query.ItemsPerPage = ItemsPerPage;
+            query.Results = await _mediator.SendAsync(query);
             return View(query);
         }
 
@@ -60,7 +36,7 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Draw draw = await _db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
+            var draw = await _mediator.SendAsync(new GetDraw{ Id = (int)id, UserId = User.Identity.GetUserIdAsGuid()});
             if (draw == null)
             {
                 return HttpNotFound();
@@ -77,17 +53,14 @@ namespace LuckyMe.Controllers
         {
             if (ModelState.IsValid)
             {
-                Draw drawEntry = await _db.Draws.FindAsync(draw.Id);
-                if (drawEntry.UserId != User.Identity.GetUserIdAsGuid())
+                try
                 {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest); 
+                    await _mediator.SendAsync(new EditDraw { Draw = draw, UserId = User.Identity.GetUserIdAsGuid() });
                 }
-
-                drawEntry.Date = draw.Date;
-                drawEntry.Cost = draw.Cost;
-                drawEntry.Award = draw.Award;
-
-                await _db.SaveChangesAsync();
+                catch (BusinessException ex)
+                {
+                    return new HttpStatusCodeResult(ex.StatusCode);
+                }
                 return RedirectToAction("Index");
             }
             return View(draw);
@@ -100,14 +73,10 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Draw draw = await _db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
+            var draw = await _mediator.SendAsync(new GetDraw { Id = (int)id, UserId = User.Identity.GetUserIdAsGuid() });
             if (draw == null)
             {
                 return HttpNotFound();
-            }
-            if (draw.UserId != User.Identity.GetUserIdAsGuid())
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             return View(draw);
         }
@@ -117,13 +86,14 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Draw draw = await _db.Draws.FindAsync(id);
-            if (draw.UserId != User.Identity.GetUserIdAsGuid())
+            try
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                await _mediator.SendAsync(new DeleteDraw { Id = id, UserId = User.Identity.GetUserIdAsGuid() });
             }
-            _db.Draws.Remove(draw);
-            await _db.SaveChangesAsync();
+            catch (BusinessException ex)
+            {
+                return new HttpStatusCodeResult(ex.StatusCode);
+            }
             return RedirectToAction("Index");
         }
     }
