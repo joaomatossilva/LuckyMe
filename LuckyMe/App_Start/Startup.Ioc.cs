@@ -37,7 +37,7 @@ namespace LuckyMe
 
             builder.RegisterModule(new CoreModule());
 
-            builder.RegisterType<CustomUserStore>().As<IUserStore<ApplicationUser, Guid>>().InstancePerRequest();
+            builder.RegisterType<CustomUserStore>().AsSelf().InstancePerRequest();
             builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerRequest();
             builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerRequest();
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication).InstancePerRequest();
