@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using LuckyMe.Core.Data;
 using LuckyMe.Core.ViewModels;
 using LuckyMe.Extensions;
-using LuckyMe.Models;
 
 namespace LuckyMe.Controllers
 {

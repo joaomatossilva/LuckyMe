@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 using Autofac;
+using Autofac.Features.Variance;
 using Autofac.Integration.Mvc;
 using LuckyMe.Core;
 using LuckyMe.Core.Data;
+using MediatR;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
@@ -17,6 +20,20 @@ namespace LuckyMe
 	    public void ConfigureIoc(IAppBuilder app)
 	    {
             var builder = new ContainerBuilder();
+
+            //SETUP MediatR
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            builder.RegisterAssemblyTypes(typeof(IMediator).Assembly).AsImplementedInterfaces();
+            builder.Register<SingleInstanceFactory>(ctx =>
+            {
+                var c = ctx.Resolve<IComponentContext>();
+                return t => c.Resolve(t);
+            });
+            builder.Register<MultiInstanceFactory>(ctx =>
+            {
+                var c = ctx.Resolve<IComponentContext>();
+                return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
+            });
 
             builder.RegisterModule(new CoreModule());
 
