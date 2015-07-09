@@ -45,7 +45,8 @@
                         @Html.DisplayFor(modelItem => item.Award)
                     </td>
                     <td>
-                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) |
+                        @Html.ActionLink("Editar", "Edit", new { id = item.Id }) 
+                        <span class="hidden-xs">|</span>
                         @Html.ActionLink("Apagar", "Delete", new { id = item.Id })
                     </td>
                 </tr>
