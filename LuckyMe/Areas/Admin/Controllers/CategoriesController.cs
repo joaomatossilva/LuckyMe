@@ -15,12 +15,17 @@ namespace LuckyMe.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db;
+
+        public CategoriesController(ApplicationDbContext db)
+        {
+            this._db = db;
+        }
 
         // GET: Admin/Categories
         public async Task<ActionResult> Index()
         {
-            return View(await db.Categories.ToListAsync());
+            return View(await _db.Categories.ToListAsync());
         }
 
         // GET: Admin/Categories/Details/5
@@ -30,7 +35,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = await db.Categories.FindAsync(id);
+            Category category = await _db.Categories.FindAsync(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -53,8 +58,8 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(category);
-                await db.SaveChangesAsync();
+                _db.Categories.Add(category);
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
@@ -68,7 +73,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = await db.Categories.FindAsync(id);
+            Category category = await _db.Categories.FindAsync(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -85,8 +90,8 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(category).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _db.Entry(category).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(category);
@@ -99,7 +104,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = await db.Categories.FindAsync(id);
+            Category category = await _db.Categories.FindAsync(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -112,19 +117,10 @@ namespace LuckyMe.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Category category = await db.Categories.FindAsync(id);
-            db.Categories.Remove(category);
-            await db.SaveChangesAsync();
+            Category category = await _db.Categories.FindAsync(id);
+            _db.Categories.Remove(category);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

@@ -72,7 +72,7 @@ namespace LuckyMe.Migrations
             if (!(context.Users.Any(u => u.UserName == "joao@kspace.pt")))
             {
                 var userStore = new CustomUserStore(context);
-                var userManager = new ApplicationUserManager(userStore);
+                var userManager = new ApplicationUserManager(userStore, null);
                 var userToInsert = new ApplicationUser { UserName = "joao@kspace.pt", Email = "joao@kspace.pt" };
                 var result = userManager.CreateAsync(userToInsert, "Password@123").Result;
                 if (result.Succeeded)

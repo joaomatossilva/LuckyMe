@@ -15,12 +15,17 @@ namespace LuckyMe.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class GamesController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db;
+
+        public GamesController(ApplicationDbContext db)
+        {
+            this._db = db;
+        }
 
         // GET: Admin/Games
         public async Task<ActionResult> Index()
         {
-            var games = db.Games.Include(g => g.Category);
+            var games = _db.Games.Include(g => g.Category);
             return View(await games.ToListAsync());
         }
 
@@ -31,7 +36,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Game game = await db.Games.FindAsync(id);
+            Game game = await _db.Games.FindAsync(id);
             if (game == null)
             {
                 return HttpNotFound();
@@ -42,7 +47,7 @@ namespace LuckyMe.Areas.Admin.Controllers
         // GET: Admin/Games/Create
         public ActionResult Create()
         {
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name");
+            ViewBag.CategoryId = new SelectList(_db.Categories, "Id", "Name");
             return View();
         }
 
@@ -55,12 +60,12 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Games.Add(game);
-                await db.SaveChangesAsync();
+                _db.Games.Add(game);
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", game.CategoryId);
+            ViewBag.CategoryId = new SelectList(_db.Categories, "Id", "Name", game.CategoryId);
             return View(game);
         }
 
@@ -71,12 +76,12 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Game game = await db.Games.FindAsync(id);
+            Game game = await _db.Games.FindAsync(id);
             if (game == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", game.CategoryId);
+            ViewBag.CategoryId = new SelectList(_db.Categories, "Id", "Name", game.CategoryId);
             return View(game);
         }
 
@@ -89,11 +94,11 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(game).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _db.Entry(game).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "Name", game.CategoryId);
+            ViewBag.CategoryId = new SelectList(_db.Categories, "Id", "Name", game.CategoryId);
             return View(game);
         }
 
@@ -104,7 +109,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Game game = await db.Games.FindAsync(id);
+            Game game = await _db.Games.FindAsync(id);
             if (game == null)
             {
                 return HttpNotFound();
@@ -117,9 +122,9 @@ namespace LuckyMe.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Game game = await db.Games.FindAsync(id);
-            db.Games.Remove(game);
-            await db.SaveChangesAsync();
+            Game game = await _db.Games.FindAsync(id);
+            _db.Games.Remove(game);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -127,7 +132,7 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

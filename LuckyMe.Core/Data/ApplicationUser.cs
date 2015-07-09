@@ -40,9 +40,9 @@ namespace LuckyMe.Core.Data
     { 
         public CustomRole() { } 
         public CustomRole(string name) { Name = name; } 
-    } 
+    }
 
-    public class CustomUserStore : UserStore<ApplicationUser, CustomRole, Guid, CustomUserLogin, CustomUserRole, CustomUserClaim> 
+    public class CustomUserStore : UserStore<ApplicationUser, CustomRole, Guid, CustomUserLogin, CustomUserRole, CustomUserClaim>
     { 
         public CustomUserStore(ApplicationDbContext context) 
             : base(context) 

@@ -15,13 +15,18 @@ namespace LuckyMe.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db;
+
+        public UserController(ApplicationDbContext db)
+        {
+            this._db = db;
+        }
 
         // GET: User
         public async Task<ActionResult> Index()
         {
             var userId = User.Identity.GetUserIdAsGuid();
-            var drawsPerGame = await (from draws in db.Draws
+            var drawsPerGame = await (from draws in _db.Draws
                 where draws.UserId == userId
                 group draws by draws.Game.Category
                 into drawsGrouppedByCategory 
@@ -48,7 +53,7 @@ namespace LuckyMe.Controllers
         public PartialViewResult SummaryEarningCosts()
         {
             var userId = User.Identity.GetUserIdAsGuid();
-            var summaryEarningCosts = (from draws in db.Draws
+            var summaryEarningCosts = (from draws in _db.Draws
                 where draws.UserId == userId
                 group draws by draws.UserId
                 into userDraws
@@ -59,15 +64,6 @@ namespace LuckyMe.Controllers
                     TotalGames = userDraws.Count()
                 }).FirstOrDefault();
             return PartialView(summaryEarningCosts);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

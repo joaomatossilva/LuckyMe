@@ -16,12 +16,17 @@ namespace LuckyMe.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db;
+
+        public UsersController(ApplicationDbContext db)
+        {
+            this._db = db;
+        }
 
         // GET: Admin/Users
         public async Task<ActionResult> Index()
         {
-            return View(await db.Users.ToListAsync());
+            return View(await _db.Users.ToListAsync());
         }
 
         // GET: Admin/Users/Details/5
@@ -31,7 +36,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
+            ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -55,8 +60,8 @@ namespace LuckyMe.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 applicationUser.Id = Guid.NewGuid();
-                db.Users.Add(applicationUser);
-                await db.SaveChangesAsync();
+                _db.Users.Add(applicationUser);
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
@@ -70,7 +75,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
+            ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -87,8 +92,8 @@ namespace LuckyMe.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(applicationUser).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                _db.Entry(applicationUser).State = EntityState.Modified;
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(applicationUser);
@@ -101,7 +106,7 @@ namespace LuckyMe.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
+            ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
             if (applicationUser == null)
             {
                 return HttpNotFound();
@@ -114,9 +119,9 @@ namespace LuckyMe.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(Guid id)
         {
-            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
-            db.Users.Remove(applicationUser);
-            await db.SaveChangesAsync();
+            ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
+            _db.Users.Remove(applicationUser);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
@@ -124,19 +129,10 @@ namespace LuckyMe.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> LoginAs(Guid id)
         {
-            ApplicationUser applicationUser = await db.Users.SingleAsync(u => u.Id == id);
+            ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
             var manager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             await manager.SignInAsync(applicationUser, false, false);
             return RedirectToAction("Index", "User", new {area = ""});
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

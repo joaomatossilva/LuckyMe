@@ -17,39 +17,12 @@ namespace LuckyMe.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
-        public ManageController()
-        {
-        }
-
         public ManageController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
-            UserManager = userManager;
-            SignInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        public ApplicationSignInManager SignInManager
-        {
-            get
-            {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            }
-            private set 
-            { 
-                _signInManager = value; 
-            }
-        }
-
-        public ApplicationUserManager UserManager
-        {
-            get
-            {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            }
-            private set
-            {
-                _userManager = value;
-            }
-        }
 
         //
         // GET: /Manage/Index
@@ -68,9 +41,9 @@ namespace LuckyMe.Controllers
             var model = new IndexViewModel
             {
                 HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
+                PhoneNumber = await _userManager.GetPhoneNumberAsync(userId),
+                TwoFactor = await _userManager.GetTwoFactorEnabledAsync(userId),
+                Logins = await _userManager.GetLoginsAsync(userId),
                 BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(User.Identity.GetUserId())
             };
             return View(model);
@@ -83,13 +56,13 @@ namespace LuckyMe.Controllers
         public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             ManageMessageId? message;
-            var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserIdAsGuid(), new UserLoginInfo(loginProvider, providerKey));
+            var result = await _userManager.RemoveLoginAsync(User.Identity.GetUserIdAsGuid(), new UserLoginInfo(loginProvider, providerKey));
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+                var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
                 if (user != null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
                 message = ManageMessageId.RemoveLoginSuccess;
             }
@@ -118,15 +91,15 @@ namespace LuckyMe.Controllers
                 return View(model);
             }
             // Generate the token and send it
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserIdAsGuid(), model.Number);
-            if (UserManager.SmsService != null)
+            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserIdAsGuid(), model.Number);
+            if (_userManager.SmsService != null)
             {
                 var message = new IdentityMessage
                 {
                     Destination = model.Number,
                     Body = "Your security code is: " + code
                 };
-                await UserManager.SmsService.SendAsync(message);
+                await _userManager.SmsService.SendAsync(message);
             }
             return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
         }
@@ -137,11 +110,11 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> EnableTwoFactorAuthentication()
         {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserIdAsGuid(), true);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+            await _userManager.SetTwoFactorEnabledAsync(User.Identity.GetUserIdAsGuid(), true);
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", "Manage");
         }
@@ -152,11 +125,11 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DisableTwoFactorAuthentication()
         {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserIdAsGuid(), false);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+            await _userManager.SetTwoFactorEnabledAsync(User.Identity.GetUserIdAsGuid(), false);
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", "Manage");
         }
@@ -165,7 +138,7 @@ namespace LuckyMe.Controllers
         // GET: /Manage/VerifyPhoneNumber
         public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserIdAsGuid(), phoneNumber);
+            var code = await _userManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserIdAsGuid(), phoneNumber);
             // Send an SMS through the SMS provider to verify the phone number
             return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
         }
@@ -180,13 +153,13 @@ namespace LuckyMe.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserIdAsGuid(), model.PhoneNumber, model.Code);
+            var result = await _userManager.ChangePhoneNumberAsync(User.Identity.GetUserIdAsGuid(), model.PhoneNumber, model.Code);
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+                var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
                 if (user != null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
             }
@@ -199,15 +172,15 @@ namespace LuckyMe.Controllers
         // GET: /Manage/RemovePhoneNumber
         public async Task<ActionResult> RemovePhoneNumber()
         {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserIdAsGuid(), null);
+            var result = await _userManager.SetPhoneNumberAsync(User.Identity.GetUserIdAsGuid(), null);
             if (!result.Succeeded)
             {
                 return RedirectToAction("Index", new { Message = ManageMessageId.Error });
             }
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
             if (user != null)
             {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             }
             return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
         }
@@ -229,13 +202,13 @@ namespace LuckyMe.Controllers
             {
                 return View(model);
             }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserIdAsGuid(), model.OldPassword, model.NewPassword);
+            var result = await _userManager.ChangePasswordAsync(User.Identity.GetUserIdAsGuid(), model.OldPassword, model.NewPassword);
             if (result.Succeeded)
             {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+                var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
                 if (user != null)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
                 return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
             }
@@ -258,13 +231,13 @@ namespace LuckyMe.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await UserManager.AddPasswordAsync(User.Identity.GetUserIdAsGuid(), model.NewPassword);
+                var result = await _userManager.AddPasswordAsync(User.Identity.GetUserIdAsGuid(), model.NewPassword);
                 if (result.Succeeded)
                 {
-                    var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+                    var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
                     if (user != null)
                     {
-                        await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     }
                     return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
                 }
@@ -283,12 +256,12 @@ namespace LuckyMe.Controllers
                 message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
+            var user = await _userManager.FindByIdAsync(User.Identity.GetUserIdAsGuid());
             if (user == null)
             {
                 return View("Error");
             }
-            var userLogins = await UserManager.GetLoginsAsync(User.Identity.GetUserIdAsGuid());
+            var userLogins = await _userManager.GetLoginsAsync(User.Identity.GetUserIdAsGuid());
             var otherLogins = AuthenticationManager.GetExternalAuthenticationTypes().Where(auth => userLogins.All(ul => auth.AuthenticationType != ul.LoginProvider)).ToList();
             ViewBag.ShowRemoveButton = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
@@ -317,7 +290,7 @@ namespace LuckyMe.Controllers
             {
                 return RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
             }
-            var result = await UserManager.AddLoginAsync(User.Identity.GetUserIdAsGuid(), loginInfo.Login);
+            var result = await _userManager.AddLoginAsync(User.Identity.GetUserIdAsGuid(), loginInfo.Login);
             return result.Succeeded ? RedirectToAction("ManageLogins") : RedirectToAction("ManageLogins", new { Message = ManageMessageId.Error });
         }
 
@@ -354,7 +327,7 @@ namespace LuckyMe.Controllers
 
         private bool HasPassword()
         {
-            var user = UserManager.FindById(User.Identity.GetUserIdAsGuid());
+            var user = _userManager.FindById(User.Identity.GetUserIdAsGuid());
             if (user != null)
             {
                 return user.PasswordHash != null;
@@ -364,7 +337,7 @@ namespace LuckyMe.Controllers
 
         private bool HasPhoneNumber()
         {
-            var user = UserManager.FindById(User.Identity.GetUserIdAsGuid());
+            var user = _userManager.FindById(User.Identity.GetUserIdAsGuid());
             if (user != null)
             {
                 return user.PhoneNumber != null;

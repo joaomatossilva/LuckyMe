@@ -8,6 +8,7 @@ namespace LuckyMe
     {
         public void Configuration(IAppBuilder app)
         {
+            ConfigureIoc(app);
             ConfigureAuth(app);
         }
     }

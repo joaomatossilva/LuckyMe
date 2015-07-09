@@ -18,14 +18,19 @@ namespace LuckyMe.Controllers
 {
     public class DrawsController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db;
         private const int ItemsPerPage = 10;
+
+        public DrawsController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
 
         // GET: Draws
         public async Task<ActionResult> Index(DrawIndexQuery query)
         {
             var userId = User.Identity.GetUserIdAsGuid();
-            var basequery = db.Draws.Where(d => d.UserId == userId);
+            var basequery = _db.Draws.Where(d => d.UserId == userId);
             if (query.GameId != null)
             {
                 basequery = basequery.Where(d => d.GameId == query.GameId);
@@ -61,7 +66,7 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Draw draw = await db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
+            Draw draw = await _db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
             if (draw == null)
             {
                 return HttpNotFound();
@@ -78,7 +83,7 @@ namespace LuckyMe.Controllers
         {
             if (ModelState.IsValid)
             {
-                Draw drawEntry = await db.Draws.FindAsync(draw.Id);
+                Draw drawEntry = await _db.Draws.FindAsync(draw.Id);
                 if (drawEntry.UserId != User.Identity.GetUserIdAsGuid())
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest); 
@@ -88,7 +93,7 @@ namespace LuckyMe.Controllers
                 drawEntry.Cost = draw.Cost;
                 drawEntry.Award = draw.Award;
 
-                await db.SaveChangesAsync();
+                await _db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
             return View(draw);
@@ -101,7 +106,7 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Draw draw = await db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
+            Draw draw = await _db.Draws.Include(d => d.Game).SingleOrDefaultAsync(d => d.Id == id);
             if (draw == null)
             {
                 return HttpNotFound();
@@ -118,23 +123,14 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Draw draw = await db.Draws.FindAsync(id);
+            Draw draw = await _db.Draws.FindAsync(id);
             if (draw.UserId != User.Identity.GetUserIdAsGuid())
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            db.Draws.Remove(draw);
-            await db.SaveChangesAsync();
+            _db.Draws.Remove(draw);
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }
