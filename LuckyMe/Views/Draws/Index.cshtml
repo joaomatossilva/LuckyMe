@@ -20,10 +20,10 @@
                 <th>
                     Data
                 </th>
-                <th>
+                <th class="hidden-xs">
                     Custo
                 </th>
-                <th>
+                <th class="hidden-xs">
                     Pr&#233;mio
                 </th>
                 <th></th>
@@ -35,13 +35,13 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Game.Name)
                     </td>
-                    <td>
+                    <td style="text-wrap: none">
                         @Html.DisplayFor(modelItem => item.Date)
                     </td>
-                    <td>
+                    <td class="hidden-xs">
                         @Html.DisplayFor(modelItem => item.Cost)
                     </td>
-                    <td>
+                    <td class="hidden-xs">
                         @Html.DisplayFor(modelItem => item.Award)
                     </td>
                     <td>
