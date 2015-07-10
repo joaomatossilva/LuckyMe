@@ -13,6 +13,8 @@ namespace LuckyMe.Core.Business.Draws
         }
 
         public int ItemsPerPage { get; set; }
+
+        [CurrentUserId]
         public Guid UserId { get; set; }
         public int Page { get; set; }
         public int? GameId { get; set; }

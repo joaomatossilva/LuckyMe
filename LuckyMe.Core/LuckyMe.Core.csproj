@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\BusinessException.cs" />
+    <Compile Include="Business\CurrentUserHandlerWrapper.cs" />
+    <Compile Include="Business\CurrentUserAsyncHandlerWrapper.cs" />
+    <Compile Include="Business\CurrentUserIdAttribute.cs" />
     <Compile Include="Business\Draws\DeleteDraw.cs" />
     <Compile Include="Business\Draws\EditDraw.cs" />
     <Compile Include="Business\Draws\GetDraw.cs" />
@@ -77,6 +80,8 @@
     <Compile Include="Data\Game.cs" />
     <Compile Include="Business\UserStats\GetUserStatistiscsOverview.cs" />
     <Compile Include="Business\Draws\GetDraws.cs" />
+    <Compile Include="Extensions\AutofacBuilderExtensions.cs" />
+    <Compile Include="Extensions\IIdentityExtensions.cs" />
     <Compile Include="ViewModels\EarningsPerGameViewModel.cs" />
     <Compile Include="ViewModels\Paged.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

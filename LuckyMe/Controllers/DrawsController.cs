@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using LuckyMe.Core.Business;
 using LuckyMe.Core.Business.Draws;
 using LuckyMe.Core.Data;
-using LuckyMe.Extensions;
+using LuckyMe.Core.Extensions;
 using MediatR;
 
 namespace LuckyMe.Controllers
@@ -22,7 +22,6 @@ namespace LuckyMe.Controllers
         // GET: Draws
         public async Task<ActionResult> Index(GetDraws query)
         {
-            query.UserId = User.Identity.GetUserIdAsGuid();
             query.ItemsPerPage = ItemsPerPage;
             query.Results = await _mediator.SendAsync(query);
             return View(query);
@@ -36,7 +35,7 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var draw = await _mediator.SendAsync(new GetDraw{ Id = (int)id, UserId = User.Identity.GetUserIdAsGuid()});
+            var draw = await _mediator.SendAsync(new GetDraw{ Id = (int)id });
             if (draw == null)
             {
                 return HttpNotFound();
@@ -55,7 +54,7 @@ namespace LuckyMe.Controllers
             {
                 try
                 {
-                    await _mediator.SendAsync(new EditDraw { Draw = draw, UserId = User.Identity.GetUserIdAsGuid() });
+                    await _mediator.SendAsync(new EditDraw { Draw = draw });
                 }
                 catch (BusinessException ex)
                 {
@@ -73,7 +72,7 @@ namespace LuckyMe.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var draw = await _mediator.SendAsync(new GetDraw { Id = (int)id, UserId = User.Identity.GetUserIdAsGuid() });
+            var draw = await _mediator.SendAsync(new GetDraw { Id = (int)id });
             if (draw == null)
             {
                 return HttpNotFound();
@@ -88,7 +87,7 @@ namespace LuckyMe.Controllers
         {
             try
             {
-                await _mediator.SendAsync(new DeleteDraw { Id = id, UserId = User.Identity.GetUserIdAsGuid() });
+                await _mediator.SendAsync(new DeleteDraw { Id = id });
             }
             catch (BusinessException ex)
             {

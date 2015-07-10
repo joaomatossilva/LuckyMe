@@ -1,5 +1,6 @@
 ﻿using System;
 using LuckyMe.Core.Data;
+using LuckyMe.Core.Extensions;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
@@ -7,7 +8,6 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using LuckyMe.Models;
-using LuckyMe.Extensions;
 
 namespace LuckyMe
 {

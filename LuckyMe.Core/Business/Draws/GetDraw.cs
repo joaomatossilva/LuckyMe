@@ -11,6 +11,8 @@ namespace LuckyMe.Core.Business.Draws
     public class GetDraw : IAsyncRequest<Draw>
     {
         public int Id { get; set; }
+
+        [CurrentUserId]
         public Guid UserId { get; set; }
     }
 }

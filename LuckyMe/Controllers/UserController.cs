@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using LuckyMe.Core.Business.UserStats;
-using LuckyMe.Extensions;
+using LuckyMe.Core.Extensions;
 using MediatR;
 
 namespace LuckyMe.Controllers
@@ -19,7 +19,7 @@ namespace LuckyMe.Controllers
         // GET: User
         public async Task<ActionResult> Index()
         {
-            var drawsPerGame = await _mediator.SendAsync(new GetUserStatistiscsOverview { UserId = User.Identity.GetUserIdAsGuid() });
+            var drawsPerGame = await _mediator.SendAsync(new GetUserStatistiscsOverview());
             return View(drawsPerGame);
         }
 
@@ -27,7 +27,7 @@ namespace LuckyMe.Controllers
         [ChildActionOnly]
         public PartialViewResult SummaryEarningCosts()
         {
-            var summaryEarningCosts = _mediator.Send(new GetUserSummaryEarningCosts {UserId = User.Identity.GetUserIdAsGuid()});
+            var summaryEarningCosts = _mediator.Send(new GetUserSummaryEarningCosts());
             return PartialView(summaryEarningCosts);
         }
     }

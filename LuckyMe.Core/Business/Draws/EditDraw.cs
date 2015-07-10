@@ -11,6 +11,7 @@ namespace LuckyMe.Core.Business.Draws
 {
     public class EditDraw : IAsyncRequest<Unit>
     {
+        [CurrentUserId]
         public Guid UserId { get; set; }
         public Draw Draw { get; set; }
     }

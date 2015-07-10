@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using LuckyMe.Core.Data;
-using LuckyMe.Extensions;
+using LuckyMe.Core.Extensions;
 using LuckyMe.Models;
 
 namespace LuckyMe.Controllers

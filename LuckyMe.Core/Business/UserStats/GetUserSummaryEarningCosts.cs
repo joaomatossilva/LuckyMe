@@ -10,6 +10,7 @@ namespace LuckyMe.Core.Business.UserStats
 {
     public class GetUserSummaryEarningCosts : IRequest<SummaryEarningCostsViewModel>
     {
+        [CurrentUserId]
         public Guid UserId { get; set; }
     }
 }

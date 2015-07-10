@@ -210,7 +210,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\NewController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Extensions\IIdentityExtensions.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

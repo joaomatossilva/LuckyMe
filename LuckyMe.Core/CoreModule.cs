@@ -1,5 +1,7 @@
 ﻿using Autofac;
+using LuckyMe.Core.Business;
 using LuckyMe.Core.Data;
+using LuckyMe.Core.Extensions;
 using MediatR;
 
 namespace LuckyMe.Core
@@ -18,6 +20,9 @@ namespace LuckyMe.Core
             builder.RegisterAssemblyTypes(typeof(CoreModule).Assembly)
                 .AsClosedTypesOf(typeof(IAsyncRequestHandler<,>))
                 .AsImplementedInterfaces();
+
+            builder.RegisterRequestDecorator("current-userid", typeof (CurrentUserHandlerWrapper<,>));
+            builder.RegisterAsyncRequestDecorator("current-userid-async", typeof(CurrentUserAsyncHandlerWrapper<,>));
         }
     }
 }
