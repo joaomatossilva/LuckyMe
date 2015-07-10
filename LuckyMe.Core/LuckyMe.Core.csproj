@@ -65,10 +65,16 @@
     <Compile Include="Business\Draws\DeleteDraw.cs" />
     <Compile Include="Business\Draws\EditDraw.cs" />
     <Compile Include="Business\Draws\GetDraw.cs" />
+    <Compile Include="Business\Draws\NewDraw.cs" />
+    <Compile Include="Business\Games\GetGame.cs" />
+    <Compile Include="Business\Games\GetGames.cs" />
     <Compile Include="Business\Handlers\Draws\DeleteDrawHandler.cs" />
     <Compile Include="Business\Handlers\Draws\EditDrawHandler.cs" />
     <Compile Include="Business\Handlers\Draws\GetDrawHandler.cs" />
     <Compile Include="Business\Handlers\Draws\GetDrawsHandler.cs" />
+    <Compile Include="Business\Handlers\Draws\NewDrawHandler.cs" />
+    <Compile Include="Business\Handlers\Games\GetGameHandler.cs" />
+    <Compile Include="Business\Handlers\Games\GetGamesHandler.cs" />
     <Compile Include="Business\Handlers\UserStats\GetUserStatistiscsOverviewHandler.cs" />
     <Compile Include="Business\Handlers\UserStats\GetUserSummaryEarningCostsHandler.cs" />
     <Compile Include="Business\UserStats\GetUserSummaryEarningCosts.cs" />
@@ -92,6 +98,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

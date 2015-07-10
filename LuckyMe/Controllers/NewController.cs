@@ -1,37 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
+using LuckyMe.Core.Business.Draws;
+using LuckyMe.Core.Business.Games;
 using LuckyMe.Core.Data;
-using LuckyMe.Core.Extensions;
-using LuckyMe.Models;
+using MediatR;
 
 namespace LuckyMe.Controllers
 {
     [Authorize]
     public class NewController : Controller
     {
-        private readonly ApplicationDbContext _db;
+        private readonly IMediator _mediator;
 
-        public NewController(ApplicationDbContext db)
+        public NewController(IMediator mediator)
         {
-            this._db = db;
+            _mediator = mediator;
         }
 
         public async Task<ActionResult> Index()
         {
-            var gameList = await _db.Games.ToListAsync();
+            var gameList = await _mediator.SendAsync(new GetGames());
             return View(gameList);
         }
 
         // GET: New
         public async Task<ActionResult> Draw(int id)
         {
-            var game = await _db.Games.Include(g => g.Category).SingleAsync(g => id == g.Id);
+            var game = await _mediator.SendAsync(new GetGame {GameId = id});
             var draw = new Draw
                        {
                            GameId = id,
@@ -46,19 +43,17 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Draw([Bind(Include = "GameId,Date,Cost,Award")]Draw draw, int id)
         {
-            var game = await _db.Games.Include(g => g.Category).SingleAsync(g => id == g.Id);
             if (draw.GameId != id)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest, "Invalid game");
             }
             if (ModelState.IsValid)
             {
-                draw.UserId = User.Identity.GetUserIdAsGuid();
-                _db.Draws.Add(draw);
-                await _db.SaveChangesAsync();
+                await _mediator.SendAsync(new NewDraw {Draw = draw});
                 return RedirectToAction("Index");
             }
 
+            var game = await _mediator.SendAsync(new GetGame { GameId = id });
             FillUpGameViewBags(game);
             return View(draw);
         }
