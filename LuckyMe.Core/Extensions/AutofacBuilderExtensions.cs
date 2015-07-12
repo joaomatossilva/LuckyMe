@@ -1,28 +1,43 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 using Autofac;
-using MediatR;
+using Autofac.Core;
 
 namespace LuckyMe.Core.Extensions
 {
     public static class AutofacBuilderExtensions
     {
-        private static string HandlerKey = "handler";
-        private static string AsyncHandlerKey = "async-handler";
-
-        public static void RegisterRequestDecorator(this ContainerBuilder builder, string name, Type decoratorType)
+        public static void RegisterHandlers(this ContainerBuilder builder, Type handlerType, params Type[] decorators)
         {
-            builder.RegisterGenericDecorator(decoratorType, typeof(IRequestHandler<,>),
-                    fromKey: HandlerKey).Named(name, typeof(IRequestHandler<,>));
-
-            HandlerKey = name;
+            RegisterHandlers(builder, handlerType);
+            for (var i = 0; i < decorators.Length; i++)
+            {
+                RegisterGenericDecorator(
+                    builder,
+                    decorators[i],
+                    handlerType,
+                    fromKeyType: i == 0 ? handlerType : decorators[i - 1],
+                    isTheLast: i == decorators.Length - 1);
+            }
         }
 
-        public static void RegisterAsyncRequestDecorator(this ContainerBuilder builder, string name, Type decoratorType)
+        private static void RegisterHandlers(ContainerBuilder builder, Type handlerType)
         {
-            builder.RegisterGenericDecorator(decoratorType, typeof(IAsyncRequestHandler<,>),
-                fromKey: AsyncHandlerKey).Named(name, typeof(IAsyncRequestHandler<,>));
+            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+                .As(t => t.GetInterfaces()
+                        .Where(v => v.IsClosedTypeOf(handlerType))
+                        .Select(v => new KeyedService(handlerType.Name, v)))
+                .InstancePerRequest();
+        }
 
-            AsyncHandlerKey = name;
+        private static void RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, Type fromKeyType, bool isTheLast)
+        {
+            var result = builder.RegisterGenericDecorator(decoratorType, decoratedServiceType, fromKeyType.Name);
+            if (!isTheLast)
+            {
+                result.Keyed(decoratorType.Name, decoratedServiceType);
+            }
         }
     }
 }

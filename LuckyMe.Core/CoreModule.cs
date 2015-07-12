@@ -12,17 +12,8 @@ namespace LuckyMe.Core
         {
             builder.RegisterType<ApplicationDbContext>().AsSelf().InstancePerRequest();
 
-            //Setup this assembly Request handlers
-            builder.RegisterAssemblyTypes(typeof(CoreModule).Assembly)
-                .AsClosedTypesOf(typeof(IRequestHandler<,>))
-                .AsImplementedInterfaces();
-
-            builder.RegisterAssemblyTypes(typeof(CoreModule).Assembly)
-                .AsClosedTypesOf(typeof(IAsyncRequestHandler<,>))
-                .AsImplementedInterfaces();
-
-            builder.RegisterRequestDecorator("current-userid", typeof (CurrentUserHandlerWrapper<,>));
-            builder.RegisterAsyncRequestDecorator("current-userid-async", typeof(CurrentUserAsyncHandlerWrapper<,>));
+            builder.RegisterHandlers(typeof(IRequestHandler<,>), typeof(CurrentUserHandlerWrapper<,>));
+            builder.RegisterHandlers(typeof(IAsyncRequestHandler<,>), typeof(CurrentUserAsyncHandlerWrapper<,>));
         }
     }
 }
