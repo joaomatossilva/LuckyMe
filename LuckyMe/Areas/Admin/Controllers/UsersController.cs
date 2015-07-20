@@ -17,10 +17,12 @@ namespace LuckyMe.Areas.Admin.Controllers
     public class UsersController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly ApplicationSignInManager _signInManager;
 
-        public UsersController(ApplicationDbContext db)
+        public UsersController(ApplicationDbContext db, ApplicationSignInManager signInManager)
         {
             this._db = db;
+            _signInManager = signInManager;
         }
 
         // GET: Admin/Users
@@ -130,8 +132,7 @@ namespace LuckyMe.Areas.Admin.Controllers
         public async Task<ActionResult> LoginAs(Guid id)
         {
             ApplicationUser applicationUser = await _db.Users.SingleAsync(u => u.Id == id);
-            var manager = HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
-            await manager.SignInAsync(applicationUser, false, false);
+            await _signInManager.SignInAsync(applicationUser, false, false);
             return RedirectToAction("Index", "User", new {area = ""});
         }
     }
