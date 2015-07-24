@@ -8,9 +8,9 @@ namespace LuckyMe.Core.Extensions
 {
     public static class AutofacBuilderExtensions
     {
-        public static void RegisterHandlers(this ContainerBuilder builder, Type handlerType, params Type[] decorators)
+        public static void RegisterHandlers(this ContainerBuilder builder, Assembly assembly, Type handlerType, params Type[] decorators)
         {
-            RegisterHandlers(builder, handlerType);
+            RegisterHandlers(builder, assembly, handlerType);
             for (var i = 0; i < decorators.Length; i++)
             {
                 RegisterGenericDecorator(
@@ -22,9 +22,9 @@ namespace LuckyMe.Core.Extensions
             }
         }
 
-        private static void RegisterHandlers(ContainerBuilder builder, Type handlerType)
+        private static void RegisterHandlers(ContainerBuilder builder, Assembly assembly, Type handlerType)
         {
-            builder.RegisterAssemblyTypes(Assembly.GetExecutingAssembly())
+            builder.RegisterAssemblyTypes(assembly)
                 .As(t => t.GetInterfaces()
                         .Where(v => v.IsClosedTypeOf(handlerType))
                         .Select(v => new KeyedService(handlerType.Name, v)))

@@ -5,7 +5,11 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 using LuckyMe.Core.Data;
+using LuckyMe.OwinIdentity;
+using LuckyMe.OwinIdentity.Account;
+using MediatR;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -16,14 +20,12 @@ namespace LuckyMe.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        private ApplicationSignInManager _signInManager;
-        private ApplicationUserManager _userManager;
+        private readonly IMediator _mediator;
 
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(IMediator mediator )
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _mediator = mediator;
         }
 
         //
@@ -40,16 +42,15 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LogIn model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
+            
+            var result = await _mediator.SendAsync(new LogIn { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -68,14 +69,11 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        public async Task<ActionResult> VerifyCode(GetCodeVerify model)
         {
             // Require that the user has already logged in via username/password or external login
-            if (!await _signInManager.HasBeenVerifiedAsync())
-            {
-                return View("Error");
-            }
-            return View(new VerifyCodeViewModel { Provider = provider, ReturnUrl = returnUrl, RememberMe = rememberMe });
+            var verifyCode = await _mediator.SendAsync(model);
+            return View(verifyCode);
         }
 
         //
@@ -83,18 +81,15 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        public async Task<ActionResult> VerifyCode(VerifyCode model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            // The following code protects for brute force attacks against the two factor codes. 
-            // If a user enters incorrect codes for a specified amount of time then the user account 
-            // will be locked out for a specified amount of time. 
-            // You can configure the account lockout settings in IdentityConfig
-            var result = await _signInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await _mediator.SendAsync(model);
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -121,22 +116,13 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(Register model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await _mediator.SendAsync(model);
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -149,13 +135,13 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(Guid userId, string code)
+        public async Task<ActionResult> ConfirmEmail(ConfirmEmail model)
         {
-            if (userId == null || code == null)
-            {
+            if (!ModelState.IsValid)
+            {                
                 return View("Error");
             }
-            var result = await _userManager.ConfirmEmailAsync(userId, code);
+            var result = await _mediator.SendAsync(model);
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -172,23 +158,16 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<ActionResult> ForgotPassword(ForgotPassword model)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByNameAsync(model.Email);
-                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user.Id)))
+                model.CallbackUrl = Url.Action("ResetPassword", "Account", new { userId = "{UserId}", code = "{Code}" }, protocol: Request.Url.Scheme);
+                var result = await _mediator.SendAsync(model);
+                if (!result)
                 {
-                    // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
                 }
-
-                // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
@@ -216,19 +195,13 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<ActionResult> ResetPassword(ResetPassword model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var user = await _userManager.FindByNameAsync(model.Email);
-            if (user == null)
-            {
-                // Don't reveal that the user does not exist
-                return RedirectToAction("ResetPasswordConfirmation", "Account");
-            }
-            var result = await _userManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var result = await _mediator.SendAsync(model);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
@@ -259,16 +232,10 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/SendCode
         [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
+        public async Task<ActionResult> SendCode(GetSendCode model)
         {
-            var userId = await _signInManager.GetVerifiedUserIdAsync();
-            if (userId == null)
-            {
-                return View("Error");
-            }
-            var userFactors = await _userManager.GetValidTwoFactorProvidersAsync(userId);
-            var factorOptions = userFactors.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList();
-            return View(new SendCodeViewModel { Providers = factorOptions, ReturnUrl = returnUrl, RememberMe = rememberMe });
+            var sendCode = await _mediator.SendAsync(model);
+            return View(sendCode);
         }
 
         //
@@ -276,7 +243,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(SendCodeViewModel model)
+        public async Task<ActionResult> SendCode(SendCode model)
         {
             if (!ModelState.IsValid)
             {
@@ -284,7 +251,7 @@ namespace LuckyMe.Controllers
             }
 
             // Generate the token and send it
-            if (!await _signInManager.SendTwoFactorCodeAsync(model.SelectedProvider))
+            if (!await _mediator.SendAsync(model))
             {
                 return View("Error");
             }
@@ -294,30 +261,28 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        public async Task<ActionResult> ExternalLoginCallback(ExternalLogin externalLogin)
         {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
-            if (loginInfo == null)
+            var result = await _mediator.SendAsync(externalLogin);
+            if (result == null)
             {
                 return RedirectToAction("Login");
             }
 
-            // Sign in the user with this external login provider if the user already has a login
-            var result = await _signInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
-            switch (result)
+            switch (result.SignInStatus)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(externalLogin.ReturnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = false });
+                    return RedirectToAction("SendCode", new { ReturnUrl = externalLogin.ReturnUrl, RememberMe = false });
                 case SignInStatus.Failure:
                 default:
                     // If the user does not have an account, then prompt the user to create an account
-                    ViewBag.ReturnUrl = returnUrl;
-                    ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                    ViewBag.ReturnUrl = externalLogin.ReturnUrl;
+                    ViewBag.LoginProvider = result.LoginInfo.Login.LoginProvider;
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmation { Email = result.LoginInfo.Email });
             }
         }
 
@@ -326,7 +291,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmation model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -335,26 +300,14 @@ namespace LuckyMe.Controllers
 
             if (ModelState.IsValid)
             {
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user);
+                var result = await _mediator.SendAsync(model);
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                        return RedirectToLocal(returnUrl);
-                    }
+                    return RedirectToLocal(returnUrl);
                 }
                 AddErrors(result);
             }
-
+            //TODO: Why not pass this to the model?
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
@@ -363,9 +316,9 @@ namespace LuckyMe.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public async Task<ActionResult> LogOff()
         {
-            AuthenticationManager.SignOut();
+            await _mediator.SendAsync(new LogOff());
             return RedirectToAction("Index", "Home");
         }
 
@@ -377,37 +330,9 @@ namespace LuckyMe.Controllers
             return View();
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (_userManager != null)
-                {
-                    _userManager.Dispose();
-                    _userManager = null;
-                }
-
-                if (_signInManager != null)
-                {
-                    _signInManager.Dispose();
-                    _signInManager = null;
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
         #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
 
         private void AddErrors(IdentityResult result)
         {

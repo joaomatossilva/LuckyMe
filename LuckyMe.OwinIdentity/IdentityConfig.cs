@@ -4,11 +4,10 @@ using System.Threading.Tasks;
 using LuckyMe.Core.Data;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.DataProtection;
 
-namespace LuckyMe
+namespace LuckyMe.OwinIdentity
 {
     public class EmailService : IIdentityMessageService
     {

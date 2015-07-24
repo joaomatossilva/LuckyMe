@@ -1,4 +1,4 @@
-﻿@model LuckyMe.Models.SendCodeViewModel
+﻿@model LuckyMe.OwinIdentity.Account.SendCode
 @{
     ViewBag.Title = "Send";
 }
@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-8">
             Select Two-Factor Authentication Provider:
-            @Html.DropDownListFor(model => model.SelectedProvider, Model.Providers)
+            @Html.DropDownListFor(model => model.SelectedProvider, Model.Providers.Select(purpose => new SelectListItem { Text = purpose, Value = purpose }).ToList())
             <input type="submit" value="Submit" class="btn btn-default" />
         </div>
     </div>

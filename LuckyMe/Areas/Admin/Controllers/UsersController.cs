@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using LuckyMe.Core.Data;
 using LuckyMe.Models;
+using LuckyMe.OwinIdentity;
 using Microsoft.AspNet.Identity.Owin;
 
 namespace LuckyMe.Areas.Admin.Controllers

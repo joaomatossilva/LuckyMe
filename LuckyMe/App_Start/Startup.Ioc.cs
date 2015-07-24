@@ -7,6 +7,7 @@ using Autofac.Features.Variance;
 using Autofac.Integration.Mvc;
 using LuckyMe.Core;
 using LuckyMe.Core.Data;
+using LuckyMe.OwinIdentity;
 using MediatR;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
@@ -37,11 +38,10 @@ namespace LuckyMe
 
             builder.RegisterModule(new CoreModule());
 
-            builder.RegisterType<CustomUserStore>().AsSelf().InstancePerRequest();
-            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerRequest();
-            builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerRequest();
+            //REGISTER IDENTITY STUFF
             builder.Register<IAuthenticationManager>(c => HttpContext.Current.GetOwinContext().Authentication).InstancePerRequest();
             builder.Register<IDataProtectionProvider>(c => app.GetDataProtectionProvider()).InstancePerRequest();
+            builder.RegisterModule(new OwinIdentityModule());
 
             // REGISTER CONTROLLERS SO DEPENDENCIES ARE CONSTRUCTOR INJECTED
             builder.RegisterControllers(typeof(MvcApplication).Assembly);

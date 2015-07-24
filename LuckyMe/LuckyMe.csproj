@@ -197,7 +197,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -218,7 +217,6 @@
       <DependentUpon>201506181010173_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -398,6 +396,10 @@
     <ProjectReference Include="..\LuckyMe.Core\LuckyMe.Core.csproj">
       <Project>{254DFF72-8921-4DC2-9CC2-F8DB5B46C3AD}</Project>
       <Name>LuckyMe.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LuckyMe.OwinIdentity\LuckyMe.OwinIdentity.csproj">
+      <Project>{6a09e7ab-5627-4e8b-a684-f244cd03dd0e}</Project>
+      <Name>LuckyMe.OwinIdentity</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

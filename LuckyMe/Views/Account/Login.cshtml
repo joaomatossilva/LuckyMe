@@ -1,5 +1,5 @@
 ﻿@using LuckyMe.Models
-@model LoginViewModel
+@model LuckyMe.OwinIdentity.Account.LogIn
 @{
     ViewBag.Title = "Log in";
 }
@@ -69,7 +69,7 @@
                 <hr />
                 
                 <section id="socialLoginForm">
-                    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                    @Html.Partial("_ExternalLoginsListPartial", new { ViewBag.ReturnUrl })
                 </section>
             </div>
         </div>  

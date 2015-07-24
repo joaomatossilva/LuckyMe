@@ -1,6 +1,7 @@
 ﻿using System;
 using LuckyMe.Core.Data;
 using LuckyMe.Core.Extensions;
+using LuckyMe.OwinIdentity;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
