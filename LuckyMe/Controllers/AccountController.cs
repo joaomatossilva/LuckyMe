@@ -42,14 +42,14 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LogIn model, string returnUrl)
+        public async Task<ActionResult> Login(LogIn.Command model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            
-            var result = await _mediator.SendAsync(new LogIn { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
+
+            var result = await _mediator.SendAsync(new LogIn.Command { Email = model.Email, Password = model.Password, RememberMe = model.RememberMe });
 
             switch (result)
             {
@@ -69,11 +69,11 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(GetCodeVerify model)
+        public async Task<ActionResult> VerifyCode(VerifyCode.Query model)
         {
             // Require that the user has already logged in via username/password or external login
-            var verifyCode = await _mediator.SendAsync(model);
-            return View(verifyCode);
+            var command = await _mediator.SendAsync(model);
+            return View(command);
         }
 
         //
@@ -81,7 +81,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyCode(VerifyCode model)
+        public async Task<ActionResult> VerifyCode(VerifyCode.Command model)
         {
             if (!ModelState.IsValid)
             {
@@ -116,7 +116,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(Register model)
+        public async Task<ActionResult> Register(Register.Command model)
         {
             if (ModelState.IsValid)
             {
@@ -135,7 +135,7 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(ConfirmEmail model)
+        public async Task<ActionResult> ConfirmEmail(ConfirmEmail.Command model)
         {
             if (!ModelState.IsValid)
             {                
@@ -158,7 +158,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ForgotPassword(ForgotPassword model)
+        public async Task<ActionResult> ForgotPassword(ForgotPassword.Command model)
         {
             if (ModelState.IsValid)
             {
@@ -195,13 +195,13 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ResetPassword(ResetPassword model)
+        public async Task<ActionResult> ResetPassword(ResetPassword.Command command)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(command);
             }
-            var result = await _mediator.SendAsync(model);
+            var result = await _mediator.SendAsync(command);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
@@ -232,10 +232,10 @@ namespace LuckyMe.Controllers
         //
         // GET: /Account/SendCode
         [AllowAnonymous]
-        public async Task<ActionResult> SendCode(GetSendCode model)
+        public async Task<ActionResult> SendCode(SendCode.Query query)
         {
-            var sendCode = await _mediator.SendAsync(model);
-            return View(sendCode);
+            var command = await _mediator.SendAsync(query);
+            return View(command);
         }
 
         //
@@ -243,7 +243,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SendCode(SendCode model)
+        public async Task<ActionResult> SendCode(SendCode.Command command)
         {
             if (!ModelState.IsValid)
             {
@@ -251,17 +251,17 @@ namespace LuckyMe.Controllers
             }
 
             // Generate the token and send it
-            if (!await _mediator.SendAsync(model))
+            if (!await _mediator.SendAsync(command))
             {
                 return View("Error");
             }
-            return RedirectToAction("VerifyCode", new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction("VerifyCode", new { Provider = command.SelectedProvider, ReturnUrl = command.ReturnUrl, RememberMe = command.RememberMe });
         }
 
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(ExternalLogin externalLogin)
+        public async Task<ActionResult> ExternalLoginCallback(ExternalLogin.Command externalLogin)
         {
             var result = await _mediator.SendAsync(externalLogin);
             if (result == null)
@@ -282,7 +282,8 @@ namespace LuckyMe.Controllers
                     // If the user does not have an account, then prompt the user to create an account
                     ViewBag.ReturnUrl = externalLogin.ReturnUrl;
                     ViewBag.LoginProvider = result.LoginInfo.Login.LoginProvider;
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmation { Email = result.LoginInfo.Email });
+                    //TODO: validate if the command should not be returned
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmation.Command() { Email = result.LoginInfo.Email });
             }
         }
 
@@ -291,7 +292,7 @@ namespace LuckyMe.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmation model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmation.Command model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -318,7 +319,7 @@ namespace LuckyMe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> LogOff()
         {
-            await _mediator.SendAsync(new LogOff());
+            await _mediator.SendAsync(new LogOff.Command());
             return RedirectToAction("Index", "Home");
         }
 
