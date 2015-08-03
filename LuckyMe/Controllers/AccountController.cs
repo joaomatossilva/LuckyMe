@@ -1,19 +1,11 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using LuckyMe.Core.Data;
-using LuckyMe.OwinIdentity;
 using LuckyMe.OwinIdentity.Account;
 using MediatR;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using LuckyMe.Models;
 
 namespace LuckyMe.Controllers
 {

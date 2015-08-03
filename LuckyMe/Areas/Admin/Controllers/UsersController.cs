@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using LuckyMe.Core.Data;
-using LuckyMe.Models;
 using LuckyMe.OwinIdentity;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace LuckyMe.Areas.Admin.Controllers
 {

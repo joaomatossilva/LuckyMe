@@ -84,12 +84,22 @@
     <Compile Include="Account\ExternalLoginConfirmation.cs" />
     <Compile Include="Account\ForgotPassword.cs" />
     <Compile Include="Account\LogOff.cs" />
+    <Compile Include="Account\ManageLogins.cs" />
     <Compile Include="Account\Register.cs" />
     <Compile Include="Account\ResetPassword.cs" />
     <Compile Include="Account\SendCode.cs" />
     <Compile Include="Account\VerifyCode.cs" />
     <Compile Include="IdentityConfig.cs" />
     <Compile Include="Account\LogIn.cs" />
+    <Compile Include="Manage\AddPhoneNumber.cs" />
+    <Compile Include="Manage\ChangePassword.cs" />
+    <Compile Include="Manage\Index.cs" />
+    <Compile Include="Manage\LinkLogin.cs" />
+    <Compile Include="Manage\RemoveLogin.cs" />
+    <Compile Include="Manage\RemovePhoneNumber.cs" />
+    <Compile Include="Manage\SetPassword.cs" />
+    <Compile Include="Manage\TwoFactorAuthentication.cs" />
+    <Compile Include="Manage\VerifyPhoneNumber.cs" />
     <Compile Include="OwinIdentityModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
